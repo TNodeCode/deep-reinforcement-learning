@@ -1,2 +1,6 @@
+ale-py
+gymnasium[all]
+jupyterlab
+matplotlib
 mkdocs
 mkdocs-material
