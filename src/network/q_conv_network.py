@@ -1,5 +1,19 @@
 import torch
 import torch.nn as nn
+import torchvision.transforms as transforms
+
+
+# Define the image preprocessing pipeline
+transform = transforms.Compose([
+    # Convert to grayscale (using the first channel for all 3 RGB channels)
+    transforms.Lambda(lambda x: torch.mean(x, dim=1, keepdim=True)),  # Convert RGB to Grayscale (shape: [batch_size, height, width, 1])
+
+    # Resize the image to 224x224
+    transforms.Lambda(lambda x: torch.nn.functional.interpolate(x, size=(224, 224), mode='bilinear', align_corners=False)),
+
+    # Optionally, normalize (you can adjust mean and std based on your requirements)
+    transforms.Lambda(lambda x: (x - x.min()) / (x.max() - x.min()))  # Normalization to [0, 1]
+])
 
 
 class DeepConvQNetwork(nn.Module):
@@ -67,6 +81,7 @@ class DeepConvQNetwork(nn.Module):
             1D vector: scores for possible actions to take
         """
         x = torch.permute(x, (0,3,1,2))
+        x = transform(x)
         return self.head(torch.flatten(self.feature_extractor(x), start_dim=1, end_dim=-1))
     
     def get_best_choice(self, actions):

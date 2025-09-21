@@ -46,14 +46,14 @@ class DeepConvQAgent(DeepQAgent):
         self.device = device
         # Build two Deep-Q-Networks 
         self.local_q_network = DeepConvQNetwork(
-            state_shape=self.env.get_state_shape(),
+            state_shape=(224,224,1),
             n_actions=self.env.get_num_actions(),
             conv_channels=conv_channels,
             hidden_dims=hidden_dims,
             activation=activation,
         ).to(device)        
         self.target_q_network = DeepConvQNetwork(
-            state_shape=self.env.get_state_shape(),
+            state_shape=(224,224,1),
             n_actions=self.env.get_num_actions(),
             conv_channels=conv_channels,
             hidden_dims=hidden_dims,
